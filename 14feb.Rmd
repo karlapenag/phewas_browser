@@ -1,0 +1,111 @@
+---
+title: "Hello"
+author: "Karla Peña"
+date: "`r Sys.Date()`"
+fontsize: 12pt
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    toc_depth: 2
+    theme: united
+    highlight: tango
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r cars}
+summary(cars)
+```
+
+```{r, warning=FALSE, results="hide"}
+library(gapminder)
+data(gapminder)
+head(gapminder)
+summary(gapminder)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# Extra
+- Use `getwd()` to get working directory
+- unordered item
+    1. first item
+    2. second item
+    3. third item
+
+## Link
+[R Markdown](https://rmarkdown.rstudio.com/)
+
+## Figures
+```{r, fig.cap='Life expectancy versus GDP per capita in 2007.'}
+library(ggplot2)
+ggplot(
+  gapminder[which(gapminder$year == 2007), ],
+  aes(x = gdpPercap, y = lifeExp)
+) +
+  geom_point() +
+  xlab("GDP per capita (US$)") +
+  ylab("Life expectancy (years)")
+```  
+
+## Formulas
+$$\int_0^\infty e^{-x^2} dx=\frac{\sqrt{\pi}}{2}$$
+
+## Image
+```{r, out.width='25%', fig.align='center', fig.cap='Karla Peña'}
+knitr::include_graphics("https://cemse.kaust.edu.sa/sites/default/files/styles/max_fullhd_scale/public/2021-09/Angelica-Strube-Masters.JPG?itok=QlJeGnkd")
+```
+
+## Tables
+```{r}
+knitr::kable(head(gapminder),
+  caption = "First rows of the 'gapminder' data."
+)
+```
+
+```{r}
+library(gapminder)
+library(kableExtra)
+data(gapminder)
+d <- gapminder[which(gapminder$year == 2007), ]
+knitr::kable(summary(d),
+  caption = "Summary of the `gapminder` data in 2007."
+)
+```
+
+## Life expectancy
+
+```{r}
+library(ggplot2)
+g <- ggplot(d, aes(
+  x = gdpPercap, y = lifeExp,
+  color = continent, size = pop, ids = country
+)) +
+  geom_point(alpha = 0.5) +
+  ggtitle("Life expectancy versus GDP, 2007") +
+  xlab("GDP per capita (US$)") +
+  ylab("Life expectancy (years)") +
+  scale_color_discrete(name = "Continent") +
+  scale_size_continuous(name = "Population")
+g
+```
