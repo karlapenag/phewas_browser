@@ -2,7 +2,6 @@
 title: "PheWAS browser"
 author: "Karla Peña"
 date: "`r Sys.Date()`"
-fontsize: 5pt
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -15,8 +14,6 @@ output:
 
 ```{r setup, include=FALSE, context = "server"}
 library(flexdashboard)
-library(bslib)
-library(dplyr)
 ```
 All
 =======================================================================
@@ -24,7 +21,7 @@ All
 Row{data-height=400}
 -----------------------------------------------------------------------
 
-### Associations{data-width=650}
+### Associations significance {data-width=650}
 
 ```{r}
 library(rio)
@@ -50,8 +47,7 @@ plot_ly() %>%
                                     "<extra></extra>")) %>%
   hide_colorbar() %>%
   layout(xaxis = list(title='Chromosome',range=c(0,23),autotick=F,dtick=1),
-         yaxis = list(title='- Log10(P-value)'), 
-         legend = list(itemsizing = 'constant'))
+         yaxis = list(title='- Log10(P-value)'))
 
 ```
 
@@ -60,7 +56,7 @@ plot_ly() %>%
 ```{r}
 
 
-knitr::include_graphics('dna.png')
+knitr::include_graphics('https://cdn-icons-png.flaticon.com/512/2372/2372697.png')
 
 ```
 
@@ -73,8 +69,7 @@ library(DT)
 DT::datatable(variants_data[c("chr","pos","snp","Gene_name","Phenotype",
                               "Cases","P_value", "Gwas_Association")],
               filter='top', rownames=FALSE, options = list(pageLength = 10),
-              width='120%', selection=list(mode='multiple',target='row'))%>%
-  formatStyle(1:7,fontsize='10px')
+              width='120%', selection=list(mode='multiple',target='row'))
 ```
 
 Browse {data-orientation=rows}
@@ -104,7 +99,7 @@ gene.choices = reactive({
 ## Reactive input snp
 renderUI({selectInput(
   'snp',
-  'Snp:',
+  'SNP:',
   choices=c("",gene.choices()$snp),
   selected=NULL,
   multiple=FALSE
