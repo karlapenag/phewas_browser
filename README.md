@@ -2,10 +2,12 @@
 
 ### Dependencies
 install.packages(c("shiny", "rio", "here", "plotly",'DT', 'flexdashboard', 'ggplot2', 'leaflet'))
-devtools::install_github("karlapenag/phewas_browser")
 
 
 ### Run dashboard
+
+devtools::install_github("karlapenag/phewas_browser")
+
 rmarkdown::run("phewas-browser.Rmd")
 
 ### Data Collection and Curation
