@@ -3,16 +3,15 @@
 ### Dependencies
 install.packages(c("shiny", "rio", "here", "plotly",'DT', 'flexdashboard', 'ggplot2', 'leaflet'))
 
+devtools::install_github("karlapenag/phewas_browser")
 
 ### Run dashboard
-
-devtools::install_github("karlapenag/phewas_browser")
 
 rmarkdown::run("phewas-browser.Rmd")
 
 ### Data Collection and Curation
 
-The whole data (215,107) was downloaded from PheWAS catalog (). The data was filtered following these criteria:
+The whole data (215,107) was downloaded from PheWAS catalog. The data was filtered following these criteria:
 - Variants with gene name (remove NULL & weird excel formatting with dates)
 - No chromosome X because caused some issues in R (cells automatically erased because identified column as numerical)
 - Randomly deleted 214,106 rows. Kept 1,001 for easier work in R.
