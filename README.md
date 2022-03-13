@@ -7,7 +7,7 @@ devtools::install_github("karlapenag/phewas_browser")
 
 ### Run dashboard
 
-rmarkdown::run("phewas-browser.Rmd")
+rmarkdown::run("index.Rmd")
 
 ### Data Collection and Curation
 
