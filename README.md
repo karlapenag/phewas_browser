@@ -14,8 +14,6 @@ PheWAS and GWAS are both association studies.
 ### Dependencies
 install.packages(c("shiny", "rio", "here", "plotly",'DT', 'flexdashboard', 'ggplot2', 'leaflet'))
 
-devtools::install_github("karlapenag/phewas_browser")
-
 ### Run dashboard
 
 rmarkdown::run("phewas-browser.Rmd")
