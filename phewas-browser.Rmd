@@ -56,7 +56,7 @@ plot_ly() %>%
 ```{r}
 
 
-knitr::include_graphics('https://cdn-icons-png.flaticon.com/512/2372/2372697.png')
+knitr::include_graphics('https://ascpt.onlinelibrary.wiley.com/cms/asset/f2fdc035-3c7a-4eaa-90e0-c9875a18762c/cts12522-fig-0001-m.jpg')
 
 ```
 
