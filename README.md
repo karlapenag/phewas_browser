@@ -1,5 +1,5 @@
-## PheWAS browser
-(Phenotype-Wide Association Studies
+## PheWAS (Phenotype-Wide Association Studies) browser
+
 Browser that allows to look at all the phenotypes associated to a specific variant.
 
 *Some relevant definitions:*
