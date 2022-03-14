@@ -9,7 +9,7 @@ devtools::install_github("karlapenag/phewas_browser")
 
 rmarkdown::run("index.Rmd")
 
-### Data Collection and Curation
+### Data Collection and Filtration
 
 The whole data (215,107) was downloaded from PheWAS catalog. The data was filtered following these criteria:
 - Variants with gene name (remove NULL & weird excel formatting with dates)

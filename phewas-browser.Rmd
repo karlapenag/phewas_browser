@@ -1,0 +1,194 @@
+---
+title: "PheWAS browser"
+author: "Karla Peña"
+date: "`r Sys.Date()`"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+    source_code: TRUE
+    theme: 'united'
+    highlight: 'tango'
+    runtime: shiny
+---
+
+```{r setup, include=FALSE, context = "server"}
+library(flexdashboard)
+```
+All
+=======================================================================
+
+Row{data-height=400}
+-----------------------------------------------------------------------
+
+### Associations significance {data-width=650}
+
+```{r}
+library(rio)
+library(here)
+library(plotly)
+
+variants_data<- import(here("phewas-data-karla.xlsx"))
+
+names(variants_data)[names(variants_data) == "chromosome"] <- "chr"
+names(variants_data)[names(variants_data) == "cases"] <- "Cases"
+names(variants_data)[names(variants_data) == "phewas phenotype"] <- "Phenotype"
+names(variants_data)[names(variants_data) == "p-value"] <- "P_value"
+names(variants_data)[names(variants_data) == "gene_name"] <- "Gene_name"
+names(variants_data)[names(variants_data) == "gwas-associations"] <- "Gwas_Association"
+
+plot_ly() %>%
+  add_markers(data=variants_data, x = ~chr, y = ~logPvalue,
+              customdata = ~Cases, color = ~chr,
+              marker = list(opacity=0.25,size = ~Cases/200), text = ~snp,
+              hoverinfo=FALSE,
+              hovertemplate = paste("<b>snp: </b>%{text}",
+                                    "<br><b>cases: </b>%{customdata}",
+                                    "<extra></extra>")) %>%
+  hide_colorbar() %>%
+  layout(xaxis = list(title='Chromosome',range=c(0,23),autotick=F,dtick=1),
+         yaxis = list(title='- Log10(P-value)'))
+
+```
+
+### --
+
+```{r}
+
+
+knitr::include_graphics('https://cdn-icons-png.flaticon.com/512/2372/2372697.png')
+
+```
+
+Row{data-height=600}{.tabset .tabset-fade}
+-----------------------------------------------------------------------
+### Whole Data
+```{r}
+library(DT)
+
+DT::datatable(variants_data[c("chr","pos","snp","Gene_name","Phenotype",
+                              "Cases","P_value", "Gwas_Association")],
+              filter='top', rownames=FALSE, options = list(pageLength = 10),
+              width='120%', selection=list(mode='multiple',target='row'))
+```
+
+Browse {data-orientation=rows}
+=======================================================================
+Inputs {.sidebar data-width=200}
+-----------------------------------------------------------------------
+<br>
+<br>
+
+```{r}
+## Input Gene name
+selectInput(
+  'gene_name',
+  'Gene name:',
+  choices=c("",variants_data$Gene_name),
+  selected=NULL,
+  multiple=FALSE
+)
+
+gene.choices = reactive({
+  if(is.null(variants_data)){return()}
+  else{
+    variants_data %>%
+      filter(Gene_name==input$gene_name)}
+})
+
+## Reactive input snp
+renderUI({selectInput(
+  'snp',
+  'SNP:',
+  choices=c("",gene.choices()$snp),
+  selected=NULL,
+  multiple=FALSE
+)})
+
+
+## Input number of cases
+minvalue <-floor(min(variants_data$Cases))
+maxvalue <-floor(max(variants_data$Cases))
+
+sliderInput('rangeValues', label= "Number of cases:",
+            min = minvalue, max = maxvalue,
+            value = c(minvalue, maxvalue))
+
+```
+
+Row{data-height=200}{.tabset .tabset-fade}
+-----------------------------------------------------------------------
+### Phenotype for each gene/variant
+
+```{r}
+
+dataFiltGenes <- reactive({
+  rowsIN <- which(variants_data$Gene_name == input$gene_name)
+  variants_data[rowsIN,]
+})
+
+dataFiltered <- reactive({
+  rowsIN <- which(variants_data$snp == input$snp)
+  variants_data[rowsIN,]
+})
+
+renderPlotly({
+  if (nrow(dataFiltGenes())==0) {
+    return(NULL)
+  }
+  else if ((nrow(dataFiltGenes())) != 0 && (nrow(dataFiltered()) == 0))  {
+    plot_ly(dataFiltGenes()) %>%
+    add_trace(x = ~Cases, y = ~Phenotype,
+              type='bar', orientation='h',marker = list(color = 'rgb(158,202,225)',
+                           line = list(color = 'rgb(8,48,107)', width = 1.5))) %>%
+    layout(xaxis = list(title='Number of cases'),
+           yaxis = list(title='Phenotype'))
+  }
+  else if ((nrow(dataFiltGenes())) != 0 && (nrow(dataFiltered()) != 0))   {
+    plot_ly(dataFiltered()) %>%
+    add_trace(x = ~Cases, y = ~Phenotype,
+              type='bar', orientation='h',
+              marker = list(color = 'rgb(158,202,225)',
+                           line = list(color = 'rgb(8,48,107)', width = 1.5)))%>%
+    
+    layout(xaxis = list(title='Numer of cases'),
+           yaxis = list(title='Phenotype'))
+  }
+})
+
+```
+
+### Phenotypes and their Gwas association for each variant
+```{r}
+## Input Gwas Data
+gwas_data<- import(here("gwas-from-phewas-karla.xlsx"))
+names(gwas_data)[names(gwas_data) == "gwas-associations"] <- "Gwas_Association"
+
+columns2hide2 <- c("logPvalue","phewas code", "odds-ratio", "chr", "pos", "Gene_name","Cases","P_value","snp")
+
+#unique_dataFiltered$GwasAssociation <- unique(dataFiltered$GwasAssociation)
+
+DT::renderDataTable({
+  DT::datatable(dataFiltered(), rownames=FALSE, 
+                options = list(lengthChange=FALSE, info=FALSE, scrollY=F, dom= 't',
+                               columnDefs = list(list(visible=FALSE,targets=columns2hide2))),
+                fillContainer=TRUE)
+})
+
+
+# grepl('kite', df$words)
+```
+
+Row{data-height=600}
+-----------------------------------------------------------------------
+### Data for each gene
+
+```{r}
+columns2hide <- c("logPvalue","phewas code", "odds-ratio")
+DT::renderDataTable({
+  DT::datatable(dataFiltGenes(), rownames=FALSE, 
+                options = list(pageLength = 2, scrollY=F,
+                               columnDefs = list(list(visible=FALSE,targets=columns2hide))))
+})
+
+```
