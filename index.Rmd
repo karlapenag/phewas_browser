@@ -1,0 +1,71 @@
+---
+title: "PheWAS browser"
+author: "Karla Peña"
+date: "`r Sys.Date()`"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+    source_code: TRUE
+    theme: 'united'
+    highlight: 'tango'
+---
+
+```{r setup, include=FALSE, context = "server"}
+library(flexdashboard)
+```
+All
+=======================================================================
+
+Row{data-height=400}
+-----------------------------------------------------------------------
+
+### Associations significance {data-width=650}
+
+```{r}
+library(rio)
+library(here)
+library(plotly)
+
+variants_data<- import(here("phewas-data-karla.xlsx"))
+
+names(variants_data)[names(variants_data) == "chromosome"] <- "chr"
+names(variants_data)[names(variants_data) == "cases"] <- "Cases"
+names(variants_data)[names(variants_data) == "phewas phenotype"] <- "Phenotype"
+names(variants_data)[names(variants_data) == "p-value"] <- "P_value"
+names(variants_data)[names(variants_data) == "gene_name"] <- "Gene_name"
+names(variants_data)[names(variants_data) == "gwas-associations"] <- "Gwas_Association"
+
+plot_ly() %>%
+  add_markers(data=variants_data, x = ~chr, y = ~logPvalue,
+              customdata = ~Cases, color = ~chr,
+              marker = list(opacity=0.25,size = ~Cases/200), text = ~snp,
+              hoverinfo=FALSE,
+              hovertemplate = paste("<b>snp: </b>%{text}",
+                                    "<br><b>cases: </b>%{customdata}",
+                                    "<extra></extra>")) %>%
+  hide_colorbar() %>%
+  layout(xaxis = list(title='Chromosome',range=c(0,23),autotick=F,dtick=1),
+         yaxis = list(title='- Log10(P-value)'))
+
+```
+
+### Robinson et al (2017)
+```{r}
+
+
+knitr::include_graphics('https://ascpt.onlinelibrary.wiley.com/cms/asset/f2fdc035-3c7a-4eaa-90e0-c9875a18762c/cts12522-fig-0001-m.jpg')
+
+```
+
+Row{data-height=600}{.tabset .tabset-fade}
+-----------------------------------------------------------------------
+### Whole Data
+```{r}
+library(DT)
+
+DT::datatable(variants_data[c("chr","pos","snp","Gene_name","Phenotype",
+                              "Cases","P_value", "Gwas_Association")],
+              filter='top', rownames=FALSE, options = list(pageLength = 10),
+              width='120%', selection=list(mode='multiple',target='row'))
+```
