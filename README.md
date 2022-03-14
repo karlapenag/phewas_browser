@@ -2,7 +2,7 @@
 (Phenotype-Wide Association Studies
 Browser that allows to look at all the phenotypes associated to a specific variant.
 
-*Some relevant definitions*
+*Some relevant definitions:*
 - Variant or SNP: mutation in a gene that it's seen in more than 1% of the population.
 - Phenotype: Human trait. This can go from the eye color to diseases such as Diabetes, Alzheimer, etc.
 PheWAS and GWAS are both association studies.
