@@ -1,4 +1,14 @@
 ## PheWAS browser
+(Phenotype-Wide Association Studies
+Browser that allows to look at all the phenotypes associated to a specific variant.
+
+*Some relevant definitions*
+- Variant or SNP: mutation in a gene that it's seen in more than 1% of the population.
+- Phenotype: Human trait. This can go from the eye color to diseases such as Diabetes, Alzheimer, etc.
+PheWAS and GWAS are both association studies.
+- GWAS: Analyzes variants across the whole genome and associates them with a phenotype of interest (many variants associated to one phenotype).
+- PheWAS: Associates one variant to many phenotypes.
+
 
 ### Dependencies
 install.packages(c("shiny", "rio", "here", "plotly",'DT', 'flexdashboard', 'ggplot2', 'leaflet'))
